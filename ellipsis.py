@@ -1,9 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
-import git
-import pysvn
+import subprocess
 import sys
 
 cwd = os.getcwd()
@@ -24,16 +23,17 @@ def find_svn_root(path):
         
 def find_git_root(path):
     try:
-        repo = git.Repo(path)
-        git_root = repo.git_dir[:-5]  # GIT dir minus the .git
-        return git_root
+        git_root = subprocess.check_output(['/usr/bin/git', 'rev-parse', '--show-toplevel'])
+        git_root = git_root[:-1] # remove new_line
+        return git_root.decode()
     except:
         return False
 
 git_root = find_git_root(cwd)
-svn_root = find_svn_root(cwd)
+svn_root = ''
+#svn_root = find_svn_root(cwd)
 if git_root:
-    repo_name = git_root.split('/')[-1]
+    repo_name = os.path.split(git_root)[-1]
     git_tag = "\033[1;31m{0}\033[1;37m".format(repo_name)
     cwd = cwd.replace(git_root, repo_name)
 elif svn_root:
@@ -49,4 +49,4 @@ if len(components) > 3:
     first = components[0]
     last = components[-1]
     cwd = "{}/…/{}".format(first, last)
-print "\033[1;37m{cwd}\033[0m".format(cwd=cwd),
+print("\033[1;37m{cwd}\033[0m".format(cwd=cwd))
