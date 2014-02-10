@@ -8,6 +8,8 @@ import sys
 cwd = os.getcwd()
 home = os.getenv('HOME')
 
+devnull = open(os.devnull, 'w')
+
 def find_svn_root(path):
     client = pysvn.Client()
     components = path.split('/')
@@ -23,7 +25,8 @@ def find_svn_root(path):
         
 def find_git_root(path):
     try:
-        git_root = subprocess.check_output(['/usr/bin/git', 'rev-parse', '--show-toplevel'])
+        git_cmd = ['/usr/bin/git', 'rev-parse', '--show-toplevel']
+        git_root = subprocess.check_output(git_cmd, stderr=devnull)
         git_root = git_root[:-1] # remove new_line
         return git_root.decode()
     except:
