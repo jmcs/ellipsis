@@ -11,17 +11,18 @@ home = os.getenv('HOME')
 devnull = open(os.devnull, 'w')
 
 def find_svn_root(path):
-    client = pysvn.Client()
-    components = path.split('/')
-    svn_root = ''
-    while components:
-        try:
-            client.info(path)
-            svn_root=path
-        except:
-            return svn_root
-        components.pop()
-        path = '/'.join(components)
+    try:
+        svn_cmd = ['/usr/bin/svn', 'info']
+        svn_info = subprocess.check_output(svn_cmd, stderr=devnull).decode()
+        info = dict()
+        for line in svn_info.splitlines():
+            if ':' in line:
+                key, value = line.split(':', maxsplit=1)
+                info[key]=value.strip()
+        return info.get('Working Copy Root Path')
+    except Exception as e:
+        print(e)
+        return False  
         
 def find_git_root(path):
     try:
@@ -33,8 +34,7 @@ def find_git_root(path):
         return False
 
 git_root = find_git_root(cwd)
-svn_root = ''
-#svn_root = find_svn_root(cwd)
+svn_root = find_svn_root(cwd)
 if git_root:
     repo_name = os.path.split(git_root)[-1]
     git_tag = "\033[1;31m{0}\033[1;37m".format(repo_name)
