@@ -36,12 +36,10 @@ git_root = find_git_root(cwd)
 svn_root = find_svn_root(cwd)
 if git_root:
     repo_name = os.path.split(git_root)[-1]
-    git_tag = "\033[1;31m{0}\033[1;37m".format(repo_name)
     cwd = cwd.replace(git_root, repo_name)
 elif svn_root:
     repo_name = svn_root.split('/')[-1]
-    svn_tag =  "\033[1;34m{0}\033[1;37m".format(repo_name)
-    cwd = cwd.replace(svn_root, svn_tag)
+    cwd = cwd.replace(svn_root, repo_name)
 elif cwd.startswith(home):
     cwd = cwd.replace(home,'~')
 
@@ -51,4 +49,4 @@ if len(components) > 3:
     first = components[0]
     last = components[-1]
     cwd = "{}/…/{}".format(first, last)
-print("\033[1;37m{cwd}\033[0m".format(cwd=cwd))
+print(cwd)
