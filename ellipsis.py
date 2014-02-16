@@ -34,12 +34,10 @@ def find_git_root(path):
 
 git_root = find_git_root(cwd)
 svn_root = find_svn_root(cwd)
-if git_root:
-    repo_name = os.path.split(git_root)[-1]
-    cwd = cwd.replace(git_root, repo_name)
-elif svn_root:
-    repo_name = svn_root.split('/')[-1]
-    cwd = cwd.replace(svn_root, repo_name)
+repo_root = git_root or svn_root
+if repo_root:
+    repo_name = os.path.split(repo_root)[-1]
+    cwd = cwd.replace(repo_root, repo_name)
 elif cwd.startswith(home):
     cwd = cwd.replace(home,'~')
 
