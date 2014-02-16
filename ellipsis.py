@@ -20,8 +20,7 @@ def find_svn_root(path):
                 key, value = line.split(':', maxsplit=1)
                 info[key]=value.strip()
         return info.get('Working Copy Root Path')
-    except Exception as e:
-        print(e)
+    except:
         return False  
         
 def find_git_root(path):
