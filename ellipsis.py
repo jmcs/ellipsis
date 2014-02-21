@@ -56,8 +56,8 @@ if substitution:
 
 components = cwd.split('/')
 
-if len(components) > 3:
+if len(components) > 4:
     first = components[0]
-    last = components[-1]
-    cwd = '{}/…/{}'.format(first, last)
+    tail = '/'.join(components[-2:])
+    cwd = '{}/…/{}'.format(first, tail)
 print(cwd)
