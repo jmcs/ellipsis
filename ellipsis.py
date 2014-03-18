@@ -24,14 +24,18 @@ def find_svn(path):
     except:
         return False  
 
-        
+
 def find_git(path):
     try:
         git_cmd = ['/usr/bin/git', 'rev-parse', '--show-toplevel']
         git_root = subprocess.check_output(git_cmd, stderr=devnull)
         git_root = git_root[:-1] # remove new_line
         git_root = git_root.decode()
-        abbr = 'GIT:{name}'.format(name=os.path.split(git_root)[-1])
+        branch_cmd = ['/usr/bin/git', 'rev-parse', '--abbrev-ref', 'HEAD']
+        git_branch = subprocess.check_output(branch_cmd, stderr=devnull)
+        git_branch = git_branch[:-1] # remove new_line
+        git_branch = git_branch.decode()
+        abbr = 'GIT:{name}({branch})'.format(name=os.path.split(git_root)[-1], branch=git_branch)
         return (git_root, abbr) 
     except:
         return False
